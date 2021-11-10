@@ -1,14 +1,3 @@
-//Algorithm
-// 1. The first person to call the game - creates the game and locks in x amount of NEAR
-// 2. After the game is created, game state changes to available and we can see the amount of NEAR locked
-// 3. Player 2 can choose amongst a set of available games and lock their near
-// 4. Once two players are in, game is set to start
-// 5. Once game starts, a random number is generated 
-// 6. One of the players is randomly asked to make a guess(Can make static for v0)
-// 7. Heads - mapped to even number, Tails is mapped to odd number
-// 8. Winning player gets total locked amount
-// 9. Game state is changed to unavailable/complete
-
 # Build a Coin-Toss game using NEAR
 In this quest, you will learn to build a simple coin-toss game using the NEAR Protocol. 
 
@@ -30,10 +19,10 @@ import { context, u128, PersistentVector, PersistentMap, logging, ContractPromis
 
 Next, we create an enum called "GameState" which would be used to change the state of the game as we progress through the game.
 
-To write an enumerator, you can use the keyword **enum** followed by the name of the enum and then write the states(Created, InProgress, Completed, NotFound) within curly braces.
+To write an enumerator, you can use the keyword **enum** followed by the name of the enum and then write the states(Created, InProgress, Completed, NotFound) within curly braces. Write the code to create an enumerator.
 
-Solution:
-<!-- enum GameState {
+<!-- Solution:
+ enum GameState {
     Created,
     InProgress,
     Completed,
@@ -97,14 +86,14 @@ You can now create a constant called ***games*** , which would be a persistent v
 Return the game ID generated in this game.
 
 // Below code would be written by users
-
+<!--
 export const games = new PersistentVector<Game>("g");
 
 export function createGame(): u32 {
     const game = new Game();
     games.push(game);
     return game.id;
-}
+} -->
 
 
 You can now run the test case, to check if your code is right.
@@ -119,7 +108,8 @@ The next step is to create a function where a player can join the game. The firs
 
 You can use logging.log to print the values from the contract on the terminal.
 
-We will loop through the persisten vector to match the game ID with the id sent by the user. Ensure to 
+We will loop through the persisten vector to match the game ID with the id sent by the user. Ensure to fill up the checks in the empty space.
+    
 export function joinGame(gameId: u32): boolean {
     //Loop through game Ids to check the game
     for(let i =0; i< games.length; i++){
@@ -138,9 +128,7 @@ export function joinGame(gameId: u32): boolean {
             logging.log("Player1 is: "+ games[i].player1);
             logging.log("Account Balance for this account is: "+ context.accountBalance);
 
-            if(context.attachedDeposit >= games[i].deposit1 
-                && games[i].gameState == GameState.Created
-                && context.sender != games[i].player1){
+            if(//USER TO FILL UP CODE HERE){
                 newGame.deposit1 = games[i].deposit1;
                 newGame.deposit2 = context.attachedDeposit;
                 newGame.gameState = GameState.InProgress;
@@ -179,7 +167,7 @@ export function chooseGuesser(gameId: u32): string {
     const randomNum = randomNumber.next();
 
     //Code snippet to be filled by user
-    for(let i =0; i< games.length; i++){
+<!--     for(let i =0; i< games.length; i++){
 
         if(games[i].id == gameId && games[i].gameState == GameState.InProgress){
             if(randomNum % 3== 0){
@@ -188,7 +176,7 @@ export function chooseGuesser(gameId: u32): string {
             else
                 return games[i].player2;
             }
-    }
+    } -->
     //Code snippet closes
     return "Game Not Found";
     
@@ -209,12 +197,12 @@ export function makeAGuess(gameId: u32, guess: boolean): string {
             newGame.player2 = games[i].player2;
             newGame.gameState = games[i].gameState;
             //Missing code snippet
-            if(context.sender == games[i].player1){
+<!--             if(context.sender == games[i].player1){
                 newGame.player1Guess = guess;
             }
             else {
                 newGame.player2Guess = guess;
-            }
+            } -->
             //End code snippet 
             games.replace(i,newGame);
             return "Done"
@@ -314,7 +302,7 @@ export function finishGame(gameId: u32) : string {
           //Send 2*deposit to the winning player
 
           //Code snippet to be filled up by user.
-          const to_beneficiary = ContractPromiseBatch.create(updateGame.winner);
+<!--           const to_beneficiary = ContractPromiseBatch.create(updateGame.winner); -->
           //Code snippet close
           to_beneficiary.transfer(u128.add(updateGame.deposit1, updateGame.deposit2));
           return updateGame.winner;
@@ -335,7 +323,7 @@ export function finishGame(gameId: u32) : string {
             //Send 2*deposit to the winning player
             const to_beneficiary = ContractPromiseBatch.create(updateGame.winner);
             //Code snippet to be filled up by user.
-            to_beneficiary.transfer(u128.add(updateGame.deposit1, updateGame.deposit2));
+<!--             to_beneficiary.transfer(u128.add(updateGame.deposit1, updateGame.deposit2)); -->
             //Code snippet close
             return updateGame.winner;
           }
