@@ -85,6 +85,19 @@ export class Game {
 
 ## Create a Game
 
+In order to create a game and store the game details on the blockchain, we would need a data structure that can store data persistenly on the NEAR Blockchain. This is where a PersistentVector data structure comes into the picture.
+
+Implements a vector / persistent array built on top of the ***Storage*** class in NEAR.
+It uses the following map: index -> element and can be written as PersistentVector<T>("unique storage prefix"), where T is the generic type parameter(a valid type supported by AssemblyScript).
+
+***Why do we need the unique storage prefix?***
+Since all data stored on the blockchain is kept in a single key-value store under the contract account, you must always use a *unique storage prefix* for different collections to avoid data collision. You can keep it a single letter if possible, in order to access it easily.
+
+You can now create a constant called ***games*** , which would be a persistent vector of ***Game*** type and a function to create a game and push the newly created game into the games vector. 
+Return the game ID generated in this game.
+
+// Below code would be written by users
+
 export const games = new PersistentVector<Game>("g");
 
 export function createGame(): u32 {
@@ -93,9 +106,20 @@ export function createGame(): u32 {
     return game.id;
 }
 
-RUN THE FIRST TEST CASE HERE.
+
+You can now run the test case, to check if your code is right.
 
 ## Join a Game
+
+The next step is to create a function where a player can join the game. The first requirement would be to send a game ID, which would refer to the game that a player wants to join. You need to ensure that a few basic checks are implemented when a player wants to join the game:
+
+1. Check if the player has attached the amount of NEAR required to play this game.
+2. Check the state of the game
+3. Check if player1 is not equal to the current player.
+
+You can use logging.log to print the values from the contract on the terminal.
+
+We will loop through the persisten vector to match the game ID with the id sent by the user. Ensure to 
 export function joinGame(gameId: u32): boolean {
     //Loop through game Ids to check the game
     for(let i =0; i< games.length; i++){
@@ -107,13 +131,13 @@ export function joinGame(gameId: u32): boolean {
             Also check if the same player is calling the 
             game or not.
             */
-            // logging.log("Attached Deposit with this account " + context.attachedDeposit.toString());
-            // logging.log("Game Deposit: " + games[i].deposit1.toString());
-            // logging.log("Game State is: "+ games[i].gameState.toString());
-            // logging.log("Context Sender is: "+ context.sender);
-            // logging.log("Player1 is: "+ games[i].player1);
+            logging.log("Attached Deposit with this account " + context.attachedDeposit.toString());
+            logging.log("Game Deposit: " + games[i].deposit1.toString());
+            logging.log("Game State is: "+ games[i].gameState.toString());
+            logging.log("Context Sender is: "+ context.sender);
+            logging.log("Player1 is: "+ games[i].player1);
+            logging.log("Account Balance for this account is: "+ context.accountBalance);
 
-            //logging.log("Account Balance for this account is: "+ context.accountBalance);
             if(context.attachedDeposit >= games[i].deposit1 
                 && games[i].gameState == GameState.Created
                 && context.sender != games[i].player1){
@@ -136,14 +160,27 @@ export function joinGame(gameId: u32): boolean {
     return false;
 }
 
-RUN THE SECOND TEST CASE HERE.
+You can now run the test case to check the correctness of your code.
 
 ## Make The Guess
+
+In a coin toss game, generally one of the players makes a guess before the toss happens. In our contract, we have written a function that would choose a guesser based on some mathematical operations. 
+
+***How will we do it?***
+We will generate a random number using the RNG command and use a modular function to determine if the random number is odd/even, a multiple of 3/5/7 or any condition that has only two outcomes - true/false.
+Based on the outcome of this condition, we will choose either player1 to guess or player2 to guess.
+
+Before we do the calculation, we need to retrieve the game id matching our game and verify the game state.
+
+Fill in the missing code snippet and click on next.
+
 export function chooseGuesser(gameId: u32): string {
     const randomNumber = new RNG<u32>(1, u32.MAX_VALUE);
     const randomNum = randomNumber.next();
 
+    //Code snippet to be filled by user
     for(let i =0; i< games.length; i++){
+
         if(games[i].id == gameId && games[i].gameState == GameState.InProgress){
             if(randomNum % 3== 0){
                 return games[i].player1; 
@@ -152,9 +189,14 @@ export function chooseGuesser(gameId: u32): string {
                 return games[i].player2;
             }
     }
+    //Code snippet closes
     return "Game Not Found";
     
 }
+
+The next step is to make a guess. The guess would be made by the player who was selected as a guesser. In this code snippet, we are not checking for the same but if you want, you can store the selected guesser for each game as well. 
+We store the chosen player's guess and update the Game structure.
+Fill in the missing code snippet and click next.
 
 export function makeAGuess(gameId: u32, guess: boolean): string {
     const newGame = new Game();
@@ -166,13 +208,14 @@ export function makeAGuess(gameId: u32, guess: boolean): string {
             newGame.player1 = games[i].player1;
             newGame.player2 = games[i].player2;
             newGame.gameState = games[i].gameState;
+            //Missing code snippet
             if(context.sender == games[i].player1){
                 newGame.player1Guess = guess;
             }
             else {
                 newGame.player2Guess = guess;
             }
-                
+            //End code snippet 
             games.replace(i,newGame);
             return "Done"
         }
@@ -180,7 +223,64 @@ export function makeAGuess(gameId: u32, guess: boolean): string {
     return "Game Not Found";
 }
 
+//Get the first player details
+export function getPlayer1Details(gameId: i32): string {
+    for(let i =0; i< games.length; i++){
+        if(games[i].id == gameId){
+            return games[i].player1;
+        }
+    }
+    return "None";
+}
+
+
+//Get the second player details
+export function getPlayer2Details(gameId: i32): string {
+    for(let i =0; i< games.length; i++){
+        if(games[i].id == gameId){
+            return games[i].player2;
+        }
+    }
+    return "None";
+}
+
+//Get the deposit details
+export function getDeposit(gameId: i32): u128 {
+    for(let i =0; i< games.length; i++){
+        if(games[i].id == gameId){
+            return games[i].deposit1;
+        }
+    }
+    return u128.Zero;
+}
+
+//Get the Game State
+export function getGameState(gameId: i32): GameState {
+    for(let i =0; i< games.length; i++){
+        if(games[i].id == gameId){
+            return games[i].gameState;
+        }
+    }
+    return GameState.NotFound;
+}
+
+Run the test cases to check the correctness of your code.
+
 ## Finish The Game
+
+The last step is to do the toss and declare the winner. In this step, we will simulate a toss by generating a Random Number again!(By now, you should be a pro in this :P). You can use any condition of your choice that returns true/false to check against the random number and declare the winner.
+
+It is very important before declaring the winner and transferring the amount that all the game related checks are in place.
+
+As a last step, the winner will get all the amount that was bet by both the players in the game. For this, we would use a cross-contract call.
+You might have observed that we imported a class called "ContractPromiseBatch" from the near assembly script sdk. This class contains code to perform batch actions from within an AssemblyScript contract. 
+
+*** How does it work?***
+1. We will use the .create method to get the account ID of the beneficiary.
+2. We will then use the .transfer method to transfer the amount to the beneficiary.
+Reference Link: https://near.github.io/near-sdk-as/classes/_sdk_core_assembly_promise_.contractpromisebatch.html
+
+Fill up the missing code snippets to complete the function.
 
 export function finishGame(gameId: u32) : string {
 
@@ -211,15 +311,14 @@ export function finishGame(gameId: u32) : string {
           updateGame.winner = games[i].player2;
           games.replace(i, updateGame);
 
-          // logging.log("Game Winner is: "+ updateGame.winner);
           //Send 2*deposit to the winning player
-          const to_beneficiary = ContractPromiseBatch.create(updateGame.winner);
 
-          //logging.log("Beneficiary is: " + to_beneficiary.id.toString());
-          // logging.log("Game Deposit 1 is: "+ updateGame.deposit1.toString());
-          // logging.log("Game Deposit 2 is: "+ updateGame.deposit2.toString());
+          //Code snippet to be filled up by user.
+          const to_beneficiary = ContractPromiseBatch.create(updateGame.winner);
+          //Code snippet close
           to_beneficiary.transfer(u128.add(updateGame.deposit1, updateGame.deposit2));
           return updateGame.winner;
+
           }
           else {
             logging.log("Game Winner is: "+ games[i].player1);
@@ -233,14 +332,11 @@ export function finishGame(gameId: u32) : string {
             updateGame.winner = games[i].player1;
             games.replace(i, updateGame);
   
-            // logging.log("Game Winner is: "+ updateGame.winner);
             //Send 2*deposit to the winning player
             const to_beneficiary = ContractPromiseBatch.create(updateGame.winner);
-  
-            //logging.log("Beneficiary is: " + to_beneficiary.id.toString());
-            // logging.log("Game Deposit 1 is: "+ updateGame.deposit1.toString());
-            // logging.log("Game Deposit 2 is: "+ updateGame.deposit2.toString());
+            //Code snippet to be filled up by user.
             to_beneficiary.transfer(u128.add(updateGame.deposit1, updateGame.deposit2));
+            //Code snippet close
             return updateGame.winner;
           }
         }
@@ -257,13 +353,9 @@ export function finishGame(gameId: u32) : string {
           updateGame.winner = games[i].player2;
           games.replace(i, updateGame);
 
-          // logging.log("Game Winner is: "+ updateGame.winner);
           //Send 2*deposit to the winning player
           const to_beneficiary = ContractPromiseBatch.create(updateGame.winner);
 
-          //logging.log("Beneficiary is: " + to_beneficiary.id.toString());
-          // logging.log("Game Deposit 1 is: "+ updateGame.deposit1.toString());
-          // logging.log("Game Deposit 2 is: "+ updateGame.deposit2.toString());
           to_beneficiary.transfer(u128.add(updateGame.deposit1, updateGame.deposit2));
           return updateGame.winner;
         }
@@ -279,13 +371,8 @@ export function finishGame(gameId: u32) : string {
           updateGame.winner = games[i].player1;
           games.replace(i, updateGame);
 
-          // logging.log("Game Winner is: "+ updateGame.winner);
           //Send 2*deposit to the winning player
           const to_beneficiary = ContractPromiseBatch.create(updateGame.winner);
-
-          //logging.log("Beneficiary is: " + to_beneficiary.id.toString());
-          // logging.log("Game Deposit 1 is: "+ updateGame.deposit1.toString());
-          // logging.log("Game Deposit 2 is: "+ updateGame.deposit2.toString());
           to_beneficiary.transfer(u128.add(updateGame.deposit1, updateGame.deposit2));
           return updateGame.winner;
         }
@@ -293,63 +380,6 @@ export function finishGame(gameId: u32) : string {
     }
   }
 return 'None';
-}
-
-RUN THE THIRD TEST CASE HERE.
-
-//Getters for all the game variables
-
-//Returns all the active games which have been created
-export function getActiveGames(): PersistentMap<u32, u128> {
-  
-  let tempGamesMap = new PersistentMap<u32, u128>("t");
-  for(let i =0; i< games.length; i++){
-      if(games[i].gameState == GameState.Created){
-          tempGamesMap.set(games[i].id, games[i].deposit1);
-      }
-  }
-  return tempGamesMap;
-}
-
-//Get the first player details
-export function getPlayer1Details(gameId: i32): string {
-    for(let i =0; i< games.length; i++){
-        if(games[i].id == gameId){
-            return games[i].player1;
-        }
-    }
-    return "None";
-}
-
-
-//Get the second player details
-export function getPlayer2Details(gameId: i32): string {
-    for(let i =0; i< games.length; i++){
-        if(games[i].id == gameId){
-            return games[i].player2;
-        }
-    }
-    return "None";
-}
-
-//Get the deposit deetails
-export function getDeposit(gameId: i32): u128 {
-    for(let i =0; i< games.length; i++){
-        if(games[i].id == gameId){
-            return games[i].deposit1;
-        }
-    }
-    return u128.Zero;
-}
-
-//Get the Game State
-export function getGameState(gameId: i32): GameState {
-    for(let i =0; i< games.length; i++){
-        if(games[i].id == gameId){
-            return games[i].gameState;
-        }
-    }
-    return GameState.NotFound;
 }
 
 //Get the winner of the game
@@ -364,5 +394,4 @@ export function getWinner(gameId: i32): string {
     return "None";
 }
 
-
-RUN THE FOURTH TEST CASE HERE.
+Run the test cases to see if you got it right!
