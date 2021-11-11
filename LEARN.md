@@ -44,7 +44,7 @@ We need to use the @nearBindgen tag in order to that serializes the class so it'
 
 We will create a class named "Game" for this contract.
 
-A unique game id is generated for each game using the u32 Random Number Generator library called RNG. We will initialiize the default values of the variables in the constructor.
+A unique game id is generated for each game using the u32 Random Number Generator library called RNG. We will initialize the default values of the variables in the constructor.
 
 ```
 /** 
@@ -95,7 +95,7 @@ It uses the following map: index -> element and can be written as PersistentVect
 Since all data stored on the blockchain is kept in a single key-value store under the contract account, you must always use a *unique storage prefix* for different collections to avoid data collision. You can keep it a single letter if possible, in order to access it easily.
 
 You can now create a constant called ***games*** , which would be a persistent vector of ***Game*** type and a function to create a game and push the newly created game into the games vector. 
-Return the game ID generated in this game.
+Return the game ID generated in this game. Create a game called "createGame()".
 
  ```
 //You can write the code here
