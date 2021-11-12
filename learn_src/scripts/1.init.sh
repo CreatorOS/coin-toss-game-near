@@ -5,7 +5,7 @@
 
 echo "deleting $CONTRACT and setting $OWNER as beneficiary"
 echo
-near delete $CONTRACT $OWNER
+# near delete $CONTRACT $OWNER
 
 echo --------------------------------------------
 echo
@@ -26,7 +26,7 @@ echo --------------------------------------------
 echo
 echo "redeploying the contract"
 echo
-near dev-deploy ./build/release/cointoss.wasm
+near deploy --accountId sh31.testnet --wasmFile ./build/release/cointoss.wasm
 
 echo --------------------------------------------
 echo run the following commands

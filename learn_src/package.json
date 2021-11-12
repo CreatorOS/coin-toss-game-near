@@ -17,6 +17,7 @@
   "license": "ISC",
   "devDependencies": {},
   "dependencies": {
+    "near-api-js": "^0.43.1",
     "near-sdk-as": "^3.0.0"
   }
 }
