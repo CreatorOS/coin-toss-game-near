@@ -3,8 +3,8 @@
 [ -z "$CONTRACT" ] && echo "Missing \$CONTRACT environment variable"
 [ -z "$OWNER" ] && echo "Missing \$OWNER environment variable"
 
-echo "deleting $CONTRACT and setting $OWNER as beneficiary"
-echo
+# echo "deleting $CONTRACT and setting $OWNER as beneficiary"
+# echo
 # near delete $CONTRACT $OWNER
 
 echo --------------------------------------------
@@ -26,7 +26,7 @@ echo --------------------------------------------
 echo
 echo "redeploying the contract"
 echo
-near deploy --accountId sh31.testnet --wasmFile ./build/release/cointoss.wasm
+near deploy --accountId $OWNER --wasmFile ./build/release/cointoss.wasm
 
 echo --------------------------------------------
 echo run the following commands
