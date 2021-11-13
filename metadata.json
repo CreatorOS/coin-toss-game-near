@@ -2,8 +2,8 @@
   "version": "1.0.0",
   "defaultFile": "src/cointoss/assembly/index.ts",
   "environment": "solidity",
-  "setupCommands": ["yarn", "sh scripts/1.init.sh"],
-  "compileCommand": "yarn build:release",
+  "setupCommands": ["yarn"],
+  "compileCommand": "sh scripts/1.init.sh",
   "tests": [
     { "itShould": "creates a new game", "command": "sh learn_tests/01.sh" },
     { "itShould": "Return the details of a newly created game", "command": "sh learn_tests/02.sh" },

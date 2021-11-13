@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-[ -z "$CONTRACT" ] && echo "Missing \$CONTRACT environment variable"
-[ -z "$OWNER" ] && echo "Missing \$OWNER environment variable"
+# [ -z "$CONTRACT" ] && echo "Missing \$CONTRACT environment variable"
+# [ -z "$OWNER" ] && echo "Missing \$OWNER environment variable"
 
 # echo "deleting $CONTRACT and setting $OWNER as beneficiary"
 # echo
@@ -26,7 +26,24 @@ echo --------------------------------------------
 echo
 echo "redeploying the contract"
 echo
+# near dev-deploy --wasmFile ./build/release/cointoss.wasm
 near deploy --accountId $OWNER --wasmFile ./build/release/cointoss.wasm
+
+echo --------------------------------------------
+echo
+echo "creating a user subaccount"
+echo
+dir_path=$(dirname $(realpath $0))
+counter=$(cat $dir_path/../db/id_counter)
+echo $((counter+=1)) > $dir_path/../db/id_counter
+export user1=user$counter.$OWNER
+near create-account $user1 --masterAccount $OWNER
+
+# echo --------------------------------------------
+# echo
+# echo "store user subaccount id in 'user1' environment variable"
+# echo
+# export user1=$()
 
 echo --------------------------------------------
 echo run the following commands

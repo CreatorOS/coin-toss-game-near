@@ -28,7 +28,7 @@ describe("Sad paths - failures", () => {
   //   const gameId = createGame();
 
   //   VMContext.setAttached_deposit(u128.from('5000000000000000000000'));
-  //   VMContext.setSigner_account_id(process.env.get('user2'));
+  //   VMContext.setSigner_account_id(process.env.get('OWNER'));
   //   joinGame(gameId);
 
   //   const guesser = chooseGuesser(gameId);
