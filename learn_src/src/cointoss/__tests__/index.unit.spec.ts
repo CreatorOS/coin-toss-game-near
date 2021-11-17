@@ -103,11 +103,11 @@ describe("Sad paths - failures", () => {
 
   // it('making the choice and finishing the game', () => {
   //   VMContext.setAttached_deposit(u128.from('5000000000000000000000'));
-  //   VMContext.setSigner_account_id('gyan.testnet');
+  //   VMContext.setSigner_account_id(process.env.get("user1"));
   //   const gameId = createGame();
 
   //   VMContext.setAttached_deposit(u128.from('5000000000000000000000'));
-  //   VMContext.setSigner_account_id('gyanlakshmi.testnet');
+  //   VMContext.setSigner_account_id(process.env.get("user2"));
   //   joinGame(gameId);
 
   //   const guesser = chooseGuesser(gameId);

@@ -1,4 +1,3 @@
-#!/usr/bin/env bash
 
 # [ -z "$CONTRACT" ] && echo "Missing \$CONTRACT environment variable"
 # [ -z "$OWNER" ] && echo "Missing \$OWNER environment variable"
@@ -14,7 +13,7 @@ echo
 rm -rf ./neardev
 
 # exit on first error after this point to avoid redeploying with successful build
-set -e
+# set -e
 
 echo --------------------------------------------
 echo
@@ -26,30 +25,18 @@ echo --------------------------------------------
 echo
 echo "redeploying the contract"
 echo
-# near dev-deploy --wasmFile ./build/release/cointoss.wasm
-near deploy --accountId $OWNER --wasmFile ./build/release/cointoss.wasm
-
-echo --------------------------------------------
-echo
-echo "creating a user subaccount"
-echo
 dir_path=$(dirname $(realpath $0))
-counter=$(cat $dir_path/../db/id_counter)
-echo $((counter+=1)) > $dir_path/../db/id_counter
-export user1=user$counter.$OWNER
-near create-account $user1 --masterAccount $OWNER
+# near deploy --accountId $OWNER --wasmFile ./build/release/cointoss.wasm
+echo "creating first dev-account"
+until near dev-deploy $dir_path/../build/release/cointoss.wasm 2>/dev/null; do :; done
 
-# echo --------------------------------------------
-# echo
-# echo "store user subaccount id in 'user1' environment variable"
-# echo
-# export user1=$()
+export user1=$(cat $dir_path/../neardev/dev-account)
+echo "user1: $user1"
 
-echo --------------------------------------------
-echo run the following commands
-echo
-echo 'export CONTRACT=__new_contract_account_id__'
-echo
-echo
 
-exit 0
+echo "creating second dev-account"
+rm -rf $dir_path/../neardev
+until near dev-deploy $dir_path/../build/release/cointoss.wasm 2>/dev/null; do :; done
+
+export user2=$(cat $dir_path/../neardev/dev-account)
+echo "user2: $user2"

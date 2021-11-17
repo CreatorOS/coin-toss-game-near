@@ -1,5 +1,4 @@
 {
-  "workspaces": [
-    "src/cointoss"
-  ]
+  "extends": "near-sdk-as/asconfig.json",
+  "workspaces": ["src/cointoss"]
 }
