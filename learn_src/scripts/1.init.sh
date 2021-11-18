@@ -25,19 +25,19 @@ echo --------------------------------------------
 echo
 echo "redeploying the contract"
 echo
-contract_file="cointoss.wasm"
+contract_file=cointoss.wasm
 dir_path=$(dirname $(realpath $0))
 # near deploy --accountId $OWNER --wasmFile ./build/release/$contract_file
 echo "creating first dev-account"
-until near dev-deploy $dir_path/build/release/$contract_file 2>/dev/null; do :; done
+until yes | near dev-deploy ./build/release/$contract_file; do :; done
 
-export user1=$(cat $dir_path/neardev/dev-account)
+export user1=$(cat ./neardev/dev-account)
 echo "user1: $user1"
 
 
 echo "creating second dev-account"
-rm -rf $dir_path/neardev
-until near dev-deploy $dir_path/build/release/$contract_file 2>/dev/null; do :; done
+rm -rf ./neardev
+until yes | near dev-deploy ./build/release/$contract_file; do :; done
 
-export user2=$(cat $dir_path/neardev/dev-account)
+export user2=$(cat ./neardev/dev-account)
 echo "user2: $user2"
