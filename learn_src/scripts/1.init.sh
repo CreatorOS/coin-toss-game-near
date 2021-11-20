@@ -1,46 +1,42 @@
-
-# [ -z "$CONTRACT" ] && echo "Missing \$CONTRACT environment variable"
-# [ -z "$OWNER" ] && echo "Missing \$OWNER environment variable"
-
-# echo "deleting $CONTRACT and setting $OWNER as beneficiary"
-# echo
-# near delete $CONTRACT $OWNER
-
 echo --------------------------------------------
 echo
-echo "cleaning up the /neardev folder"
+echo "cleaning up"
 echo
+echo --------------------------------------------
 rm -rf ./neardev
-
-# exit on first error after this point to avoid redeploying with successful build
-# set -e
 
 echo --------------------------------------------
 echo
 echo "rebuilding the contract (release build)"
 echo
+echo --------------------------------------------
 yarn build:release
 
-echo --------------------------------------------
-echo
-echo "redeploying the contract"
-echo
-contract_file=cointoss.wasm
-echo "creating first dev-account"
-until echo "n" | near dev-deploy ./build/release/$contract_file; do :; done
+file1="user1.txt"
+file2="user2.txt"
+if [ ! -f "$file1" ] || [ ! -f "$file2" ]
+then
+    echo --------------------------------------------
+    echo
+    echo "redeploying the contract"
+    echo
+    echo --------------------------------------------
+    contract_file=$1
+    echo "creating first dev-account"
+    until echo "n" | near dev-deploy ./build/release/$contract_file; do :; done
 
-user1=$(cat ./neardev/dev-account)
-touch user1.txt
-echo $user1 > user1.txt
-echo "user1: $user1"
+    user1=$(cat ./neardev/dev-account)
+    touch user1.txt
+    echo $user1 > user1.txt
+    echo "user1: $user1"
 
 
-echo "creating second dev-account"
-rm -rf ./neardev
-until near dev-deploy ./build/release/$contract_file; do :; done
+    echo "creating second dev-account"
+    rm -rf ./neardev
+    until near dev-deploy ./build/release/$contract_file; do :; done
 
-user2=$(cat ./neardev/dev-account)
-touch user2.txt
-echo $user2 > user2.txt
-echo "user2: $user2"
-
+    user2=$(cat ./neardev/dev-account)
+    touch user2.txt
+    echo $user2 > user2.txt
+    echo "user2: $user2"
+fi
