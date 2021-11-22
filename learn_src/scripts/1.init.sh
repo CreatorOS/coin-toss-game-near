@@ -10,8 +10,7 @@ echo
 echo "rebuilding the contract (release build)"
 echo
 echo --------------------------------------------
-yarn build:release
-set -e
+yarn build:release || exit 1
 
 file1="user1.txt"
 file2="user2.txt"

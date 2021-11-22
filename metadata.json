@@ -2,8 +2,8 @@
   "version": "1.0.0",
   "defaultFile": "src/cointoss/assembly/index.ts",
   "environment": "near-asm",
-  "setupCommands": [". scripts/1.init.sh cointoss.wasm"],
-  "compileCommand": "yarn build:release || exit 1",
+  "setupCommands": [],
+  "compileCommand": ". scripts/1.init.sh cointoss.wasm",
   "tests": [
     {
       "itShould": "creates a new game",
