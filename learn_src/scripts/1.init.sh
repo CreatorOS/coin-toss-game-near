@@ -11,6 +11,7 @@ echo "rebuilding the contract (release build)"
 echo
 echo --------------------------------------------
 yarn build:release
+set -e
 
 file1="user1.txt"
 file2="user2.txt"

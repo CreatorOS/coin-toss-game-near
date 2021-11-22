@@ -10,5 +10,4 @@
 // 9. Game state is changed to unavailable/complete
 import { context, u128, PersistentMap, logging, ContractPromiseBatch, RNG } from "near-sdk-as";
 
-
 // Write your code here

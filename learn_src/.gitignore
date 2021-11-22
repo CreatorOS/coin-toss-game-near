@@ -5,3 +5,7 @@ Dockerfile
 
 user1.txt
 user2.txt
+
+main.sh
+test.sh
+compile.sh
