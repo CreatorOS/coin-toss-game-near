@@ -7,19 +7,19 @@
   "tests": [
     {
       "itShould": "creates a new game",
-      "command": "sh learn_tests/01.sh"
+      "command": ". learn_tests/01.sh"
     },
     {
       "itShould": "Return the details of a newly created game",
-      "command": "sh learn_tests/02.sh"
+      "command": ". learn_tests/02.sh"
     },
     {
       "itShould": "A Player 2 joining an existing game",
-      "command": "sh learn_tests/03.sh"
+      "command": ". learn_tests/03.sh"
     },
     {
       "itShould": "Sad paths - failures",
-      "command": "sh learn_tests/04.sh"
+      "command": ". learn_tests/04.sh"
     }
   ],
   "learnerAccessibleFileList": ["src/cointoss/assembly/*"]
