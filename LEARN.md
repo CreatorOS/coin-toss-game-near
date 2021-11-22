@@ -17,7 +17,7 @@ In this quest, we will import all the required libraries and functionalities fro
 
 
 ```
-import { context, u128, PersistentVector, PersistentMap, logging, ContractPromiseBatch, RNG} from "near-sdk-as";
+import { context, u128, PersistentMap, logging, ContractPromiseBatch, RNG} from "near-sdk-as";
 ```
 
 Next, we will create an enum called "GameState" which would be used to change the state of the game as we progress through the game.
@@ -133,8 +133,8 @@ You need to ensure that a few basic checks are implemented when a player wants t
 3. Check if player1 is not equal to the current player.
 
 You can use logging.log to print the values from the contract on the terminal.
-Here is an example syntax for ***logging.log***:
-***logging.log("Attached Deposit with this account " + context.attachedDeposit.toString()); ***
+Here is an example syntax for printing out logs: 
+***logging.log("Attached Deposit with this account " + context.attachedDeposit.toString());***
 
 Ensure to fill up the checks in the empty space.
     
@@ -279,12 +279,12 @@ It is very important before declaring the winner and transferring the amount tha
 As a last step, the winner will get all the amount that was bet by both the players in the game. For this, we would use a cross-contract call.
 You might have observed that we imported a class called "ContractPromiseBatch" from the near assembly script sdk. This class contains code to perform batch actions from within an Assembly Script contract. 
 
-*** How does it work?***
+***How does it work?***
 1. We will use the .create method to get the account ID of the beneficiary.
 2. We will then use the .transfer method to transfer the amount to the beneficiary.
 Reference Link: https://near.github.io/near-sdk-as/classes/_sdk_core_assembly_promise_.contractpromisebatch.html
 
-The code may look a little lengtheir, but it is really just a collection of possibilities. Fill up the missing code snippets to complete the function.
+The code may look a little lengthy, but it is really just a collection of possibilities. Fill up the missing code snippets to complete the function.
 
  ```
 export function finishGame(gameId: u32): string {
