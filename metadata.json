@@ -3,7 +3,7 @@
   "defaultFile": "src/cointoss/assembly/index.ts",
   "environment": "near-asm",
   "setupCommands": [],
-  "compileCommand": ". scripts/1.init.sh cointoss.wasm",
+  "compileCommand": "yarn build",
   "tests": [
     {
       "itShould": "creates a new game",
